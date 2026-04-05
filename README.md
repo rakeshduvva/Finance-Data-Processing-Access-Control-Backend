@@ -2,23 +2,13 @@
 
 A comprehensive backend system for a finance dashboard with role-based access control (RBAC), financial records management, and analytical dashboard APIs.
 
-## Table of Contents
-
-- [Overview](#overview)
-- [Tech Stack](#tech-stack)
-- [Getting Started](#getting-started)
-- [Project Structure](#project-structure)
-- [API Documentation](#api-documentation)
-- [Authentication & Authorization](#authentication--authorization)
-- [Database Schema](#database-schema)
-- [Testing](#testing)
-- [Design Decisions & Assumptions](#design-decisions--assumptions)
-
 ---
 
 ## Overview
 
-This backend serves as the API layer for a finance dashboard system where different users interact with financial records based on their role. The system supports:
+This backend serves as the API layer for a finance dashboard system where different users interact with financial records based on their role.
+
+The system supports:
 
 - **User & Role Management** — Create, update, and manage users with role-based access
 - **Financial Records** — Full CRUD with filtering, pagination, sorting, and soft delete
@@ -32,7 +22,7 @@ This backend serves as the API layer for a finance dashboard system where differ
 ## Tech Stack
 
 | Component | Technology |
-|---|---|
+| --- | --- |
 | Runtime | Node.js 18+ |
 | Framework | Express.js |
 | ORM | Prisma |
@@ -54,48 +44,71 @@ This backend serves as the API layer for a finance dashboard system where differ
 
 ### Installation
 
+1. Clone the repository
+
 ```bash
-# 1. Clone the repository
-git clone <repo-url>
-cd finance-dashboard-backend
+git clone https://github.com/rakeshduvva/Finance-Data-Processing-Access-Control-Backend.git
+cd Finance-Data-Processing-Access-Control-Backend
+```
 
-# 2. Install dependencies
+2. Install dependencies
+
+```bash
 npm install
+```
 
-# 3. Set up environment variables
+3. Set up environment variables
+
+```bash
 cp .env.example .env
-# (On Windows: copy .env.example .env)
-# Edit .env if you want to customize settings
+```
 
-# 4. Run database migrations
+On Windows use:
+
+```bash
+copy .env.example .env
+```
+
+4. Run database migrations
+
+```bash
 npx prisma migrate dev
+```
 
-# 5. Generate Prisma client
+5. Generate Prisma client
+
+```bash
 npx prisma generate
+```
 
-# 6. Seed the database with sample data
+6. Seed the database with sample data
+
+```bash
 npm run seed
+```
 
-# 7. Start the development server
+7. Start the development server
+
+```bash
 npm run dev
 ```
 
 ### Quick Start URLs
 
 | Resource | URL |
-|---|---|
-| API Server | http://localhost:3000 |
-| Swagger Docs | http://localhost:3000/api-docs |
-| Health Check | http://localhost:3000/api/health |
+| --- | --- |
+| API Server | `http://localhost:3000` |
+| Swagger Docs | `http://localhost:3000/api-docs` |
+| Health Check | `http://localhost:3000/api/health` |
 
 ### Default Seed Users
 
 | Role | Email | Password |
-|---|---|---|
-| Admin | admin@example.com | password123 |
-| Analyst | analyst@example.com | password123 |
-| Viewer | viewer@example.com | password123 |
-| Inactive | inactive@example.com | password123 |
+| --- | --- | --- |
+| Admin | `admin@example.com` | `password123` |
+| Analyst | `analyst@example.com` | `password123` |
+| Viewer | `viewer@example.com` | `password123` |
+| Inactive | `inactive@example.com` | `password123` |
 
 ---
 
@@ -103,6 +116,7 @@ npm run dev
 
 ```
 ├── prisma/
+│   ├── migrations/                # Database migration history
 │   └── schema.prisma              # Database schema definition
 ├── src/
 │   ├── config/
@@ -117,7 +131,7 @@ npm run dev
 │   │   ├── auth/                  # Authentication (register, login, profile)
 │   │   ├── users/                 # User management (admin CRUD)
 │   │   ├── records/               # Financial records (CRUD + filtering)
-│   │   └── dashboard/             # Analytics & summaries
+│   │   └── dashboard/             # Analytics and summaries
 │   ├── utils/
 │   │   ├── ApiError.js            # Custom error class
 │   │   ├── ApiResponse.js         # Standardized response wrapper
@@ -127,13 +141,12 @@ npm run dev
 ├── tests/
 │   └── api.test.js                # Integration tests
 ├── seed.js                        # Database seeder
-├── .env                           # Environment configuration
-├── .gitignore
+├── .env.example                   # Environment template
 ├── package.json
 └── README.md
 ```
 
-**Architecture**: The project follows a **modular architecture** with clear separation of concerns — each module has its own controller (handles HTTP), service (business logic), routes (endpoint definitions), and validation (input schemas).
+The project follows a **modular architecture** — each module has its own controller (HTTP), service (business logic), routes (endpoints), and validation (input schemas).
 
 ---
 
@@ -141,54 +154,63 @@ npm run dev
 
 ### Interactive Docs
 
-Start the server and visit **http://localhost:3000/api-docs** for interactive Swagger documentation where you can test all endpoints directly.
+Start the server and visit `http://localhost:3000/api-docs` for interactive Swagger documentation.
 
-### Endpoints Summary
+### Auth Endpoints
 
-#### Auth (`/api/auth`)
 | Method | Endpoint | Access | Description |
-|---|---|---|---|
-| POST | `/api/auth/register` | Public | Register a new user |
-| POST | `/api/auth/login` | Public | Login and get JWT token |
-| GET | `/api/auth/me` | Authenticated | Get current user profile |
+| --- | --- | --- | --- |
+| `POST` | `/api/auth/register` | Public | Register a new user |
+| `POST` | `/api/auth/login` | Public | Login and get JWT token |
+| `GET` | `/api/auth/me` | Authenticated | Get current user profile |
 
-#### Users (`/api/users`)
+### User Endpoints
+
 | Method | Endpoint | Access | Description |
-|---|---|---|---|
-| GET | `/api/users` | Admin | List all users (paginated, filterable) |
-| GET | `/api/users/:id` | Admin | Get user by ID |
-| PATCH | `/api/users/:id` | Admin | Update user (role, status, name) |
-| DELETE | `/api/users/:id` | Admin | Deactivate user |
+| --- | --- | --- | --- |
+| `GET` | `/api/users` | Admin | List all users (paginated, filterable) |
+| `GET` | `/api/users/:id` | Admin | Get user by ID |
+| `PATCH` | `/api/users/:id` | Admin | Update user (role, status, name) |
+| `DELETE` | `/api/users/:id` | Admin | Deactivate user |
 
-#### Financial Records (`/api/records`)
+### Financial Record Endpoints
+
 | Method | Endpoint | Access | Description |
-|---|---|---|---|
-| POST | `/api/records` | Admin | Create a financial record |
-| GET | `/api/records` | Analyst, Admin | List records (filtered, paginated) |
-| GET | `/api/records/:id` | Analyst, Admin | Get single record |
-| PATCH | `/api/records/:id` | Admin | Update record |
-| DELETE | `/api/records/:id` | Admin | Soft-delete record |
+| --- | --- | --- | --- |
+| `POST` | `/api/records` | Admin | Create a financial record |
+| `GET` | `/api/records` | Analyst, Admin | List records (filtered, paginated) |
+| `GET` | `/api/records/:id` | Analyst, Admin | Get single record |
+| `PATCH` | `/api/records/:id` | Admin | Update record |
+| `DELETE` | `/api/records/:id` | Admin | Soft-delete record |
 
-**Available Filters**: `?type=INCOME&category=Salary&startDate=2024-01-01&endDate=2024-12-31&page=1&limit=20&sortBy=date&order=desc&search=keyword`
+**Available Filters:**
 
-#### Dashboard (`/api/dashboard`)
+```
+GET /api/records?type=INCOME&category=Salary&startDate=2024-01-01&endDate=2024-12-31&page=1&limit=20&sortBy=date&order=desc&search=keyword
+```
+
+### Dashboard Endpoints
+
 | Method | Endpoint | Access | Description |
-|---|---|---|---|
-| GET | `/api/dashboard/summary` | All roles | Total income, expenses, net balance |
-| GET | `/api/dashboard/category-summary` | Analyst, Admin | Category-wise breakdown |
-| GET | `/api/dashboard/trends` | Analyst, Admin | Monthly income/expense trends |
-| GET | `/api/dashboard/recent-activity` | All roles | Recent financial records |
+| --- | --- | --- | --- |
+| `GET` | `/api/dashboard/summary` | All roles | Total income, expenses, net balance |
+| `GET` | `/api/dashboard/category-summary` | Analyst, Admin | Category-wise breakdown |
+| `GET` | `/api/dashboard/trends` | Analyst, Admin | Monthly income/expense trends |
+| `GET` | `/api/dashboard/recent-activity` | All roles | Recent financial records |
 
-### Response Format
+---
 
-All API responses follow a consistent format:
+## Response Format
 
-**Success Response:**
+All API responses follow a consistent format.
+
+**Success:**
+
 ```json
 {
   "success": true,
   "message": "Description of what happened",
-  "data": { ... },
+  "data": {},
   "meta": {
     "page": 1,
     "limit": 20,
@@ -198,7 +220,8 @@ All API responses follow a consistent format:
 }
 ```
 
-**Error Response:**
+**Error:**
+
 ```json
 {
   "success": false,
@@ -219,35 +242,31 @@ All API responses follow a consistent format:
 
 ### Authentication
 
-The API uses **JWT (JSON Web Tokens)** for authentication. After logging in, include the token in the `Authorization` header:
+The API uses JWT (JSON Web Tokens). After logging in, include the token in the `Authorization` header:
 
 ```
 Authorization: Bearer <your-jwt-token>
 ```
 
-### Role-Based Access Control (RBAC)
-
-Three roles with hierarchical permissions:
+### Role-Based Access Control
 
 | Action | Viewer | Analyst | Admin |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | View dashboard summary | ✅ | ✅ | ✅ |
 | View recent activity | ✅ | ✅ | ✅ |
 | View category breakdown | ❌ | ✅ | ✅ |
 | View trends | ❌ | ✅ | ✅ |
-| List/view records | ❌ | ✅ | ✅ |
+| List and view records | ❌ | ✅ | ✅ |
 | Create records | ❌ | ❌ | ✅ |
 | Update records | ❌ | ❌ | ✅ |
 | Delete records | ❌ | ❌ | ✅ |
 | Manage users | ❌ | ❌ | ✅ |
 
-Access control is implemented as **Express middleware** (`authorize.js`) that checks the authenticated user's role against the allowed roles for each route.
+Access control is implemented as Express middleware that checks the user's role against allowed roles per route.
 
 ---
 
 ## Database Schema
-
-### Entity Relationship
 
 ```
 ┌──────────────────┐         ┌──────────────────────┐
@@ -266,87 +285,68 @@ Access control is implemented as **Express middleware** (`authorize.js`) that ch
                              └──────────────────────┘
 ```
 
-- **SQLite** chosen for zero-configuration setup — no external database server needed
-- **Prisma ORM** provides type-safe queries and automatic migrations
-- **Soft delete** with `isDeleted` flag preserves data integrity
+- **SQLite** for zero-configuration setup
+- **Prisma ORM** for type-safe queries and migrations
+- **Soft delete** via `isDeleted` flag to preserve data integrity
 
 ---
 
 ## Testing
 
-Run the full test suite:
+Run the test suite:
 
 ```bash
 npm test
 ```
 
-### Test Coverage
+The suite includes **32 integration tests** covering:
 
-The test suite includes **25+ integration tests** covering:
-
-- ✅ User registration and login
-- ✅ Input validation and error responses
-- ✅ JWT token generation and verification
-- ✅ Role-based access enforcement (viewer, analyst, admin)
-- ✅ Financial record CRUD operations
-- ✅ Record filtering and pagination
-- ✅ Soft delete behavior
-- ✅ Dashboard summary, categories, trends
-- ✅ Health check and 404 handling
-- ✅ Duplicate email prevention
-- ✅ Invalid credentials rejection
+- User registration, login, and token validation
+- Role-based access enforcement for all roles
+- Financial record CRUD operations
+- Record filtering and pagination
+- Soft delete behavior
+- Dashboard analytics endpoints
+- Input validation and error responses
+- Health check and 404 handling
 
 ---
 
 ## Design Decisions & Assumptions
 
-### Architecture Decisions
+### Architecture
 
-1. **Modular Structure**: Each feature (auth, users, records, dashboard) is organized as a self-contained module with its own controller, service, routes, and validation. This promotes separation of concerns and maintainability.
-
-2. **Service Layer Pattern**: Business logic is isolated in service classes, keeping controllers thin and focused on HTTP concerns. This makes the logic testable and reusable.
-
-3. **Middleware-Based RBAC**: Access control is implemented as composable Express middleware (`authenticate` → `authorize(roles)`), allowing clean and declarative route protection.
-
-4. **Standardized Responses**: All API responses use `ApiResponse` and `ApiError` classes for consistent format, making the API predictable for frontend consumers.
-
-5. **Zod Validation**: Input validation schemas are co-located with their modules and provide descriptive, field-level error messages.
+1. **Modular Structure** — Each feature is a self-contained module with controller, service, routes, and validation
+2. **Service Layer Pattern** — Business logic isolated from HTTP concerns for testability
+3. **Middleware-Based RBAC** — Composable `authenticate` and `authorize(roles)` middleware
+4. **Standardized Responses** — `ApiResponse` and `ApiError` classes for consistent output
 
 ### Assumptions
 
-1. **Registration is open**: Any user can register (in production, admin-only registration or email verification would be implemented).
-2. **Role assignment at registration**: Users can specify their role during registration for testing convenience. In production, this would be admin-controlled.
-3. **Single-tenant**: The system doesn't have organization/tenant isolation — all users share the same financial records pool.
-4. **Soft delete only**: Financial records are soft-deleted (marked with `isDeleted: true`) rather than permanently removed, preserving audit trails.
-5. **UTC dates**: All dates are stored and returned in UTC format.
+1. Registration is open (in production, admin-only or email verification would be used)
+2. Role can be specified at registration for testing convenience
+3. Single-tenant system — all users share the same records pool
+4. Financial records are soft-deleted to preserve audit trails
+5. All dates stored in UTC
 
-### Tradeoffs
+### Security
 
-| Decision | Benefit | Tradeoff |
-|---|---|---|
-| SQLite over PostgreSQL | Zero-config setup, portable | No concurrent writes at scale |
-| JWT over sessions | Stateless, horizontally scalable | Can't revoke tokens without blocklist |
-| Soft delete | Data recovery, audit trail | Query complexity (must filter `isDeleted`) |
-| Monolithic structure | Simplicity for assessment scope | Would benefit from microservices at scale |
-
-### Security Measures
-
-- **Password hashing**: bcrypt with 12 salt rounds
-- **Helmet**: HTTP security headers
-- **Rate limiting**: 100 req/15min (API), 20 req/15min (auth)
-- **Input validation**: All endpoints validated with Zod
-- **JWT expiration**: Tokens expire after 7 days
-- **JSON body size limit**: 10KB max to prevent payload attacks
+- Password hashing with bcrypt (12 salt rounds)
+- Helmet for HTTP security headers
+- Rate limiting: 100 req/15min (API), 20 req/15min (auth)
+- Zod input validation on all endpoints
+- JWT tokens with 7-day expiration
+- JSON body size limited to 10KB
 
 ---
 
 ## Available Scripts
 
 | Script | Command | Description |
-|---|---|---|
+| --- | --- | --- |
 | Start | `npm start` | Run production server |
 | Dev | `npm run dev` | Start with auto-reload |
-| Seed | `npm run seed` | Populate database with sample data |
+| Seed | `npm run seed` | Populate sample data |
 | Test | `npm test` | Run integration tests |
 | Prisma Generate | `npm run prisma:generate` | Regenerate Prisma client |
 | Prisma Migrate | `npm run prisma:migrate` | Run database migrations |
@@ -357,5 +357,3 @@ The test suite includes **25+ integration tests** covering:
 ## License
 
 ISC
-#   F i n a n c e - D a t a - P r o c e s s i n g - A c c e s s - C o n t r o l - B a c k e n d  
- 
